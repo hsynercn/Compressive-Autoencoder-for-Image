@@ -1,0 +1,2 @@
+model_checkpoint_path: "C:/Users/saruman/PycharmProjects/AutoEncoder/TestOutput/model_util_test_BASIC.ckpt"
+all_model_checkpoint_paths: "C:/Users/saruman/PycharmProjects/AutoEncoder/TestOutput/model_util_test_BASIC.ckpt"
