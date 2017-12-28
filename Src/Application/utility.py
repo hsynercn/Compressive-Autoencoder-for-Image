@@ -44,19 +44,19 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
 
     with tf.Session() as sess:
         sess.run(init)
-        #for i in range(1, num_steps):
-        #    sample_cnt = 0
-        #    while sample_cnt < mnist.train.num_examples:
-        #        batch_x, _ = mnist.train.next_batch(batch_size)
-        #        _, loss_value = sess.run([optimizer, loss], feed_dict={input: batch_x})
-        #        sample_cnt += batch_size
-        #    print('Training Sample %i: Minibatch Loss: %f' % (i, loss_value))
+        for i in range(1, num_steps):
+            sample_cnt = 0
+            while sample_cnt <= mnist.train.num_examples:
+                batch_x, _ = mnist.train.next_batch(batch_size)
+                _, loss_value = sess.run([optimizer, loss], feed_dict={input: batch_x})
+                sample_cnt += batch_size
+            print('Training Sample %i: Minibatch Loss: %f' % (i, loss_value))
 
-        for i in range(1, num_steps_old + 1):
-            batch_x, _ = mnist.train.next_batch(batch_size)
-            _, l = sess.run([optimizer, loss], feed_dict={input: batch_x})
-            if i % display_step == 0 or i == 1:
-                print('Step %i: Minibatch Loss: %f' % (i, l))
+        #for i in range(1, num_steps_old + 1):
+        #    batch_x, _ = mnist.train.next_batch(batch_size)
+        #    _, l = sess.run([optimizer, loss], feed_dict={input: batch_x})
+        #    if i % display_step == 0 or i == 1:
+        #        print('Step %i: Minibatch Loss: %f' % (i, l))
 
         saver.save(sess, model_file_path)
 
@@ -104,8 +104,8 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 autoencoder_architecture = [784, 128, 64, 128, 784]
 
-model_path = "C:/Users/saruman/PycharmProjects/AutoEncoder/TestOutput/model_util_test_BASIC.ckpt"
-out_path = "C:/Users/saruman/PycharmProjects/AutoEncoder/TestOutput/compressed_data"
+model_path = "C:/Users/saruman/PycharmProjects/Compressive-Autorencoder-for-Image/TestOutput/model_util_test_H_PER.ckpt"
+out_path = "C:/Users/saruman/PycharmProjects/Compressive-Autorencoder-for-Image/TestOutput/compressed_data"
 batch_x, _ = mnist.train.next_batch(1)
 
 

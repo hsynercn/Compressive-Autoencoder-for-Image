@@ -1,2 +1,2 @@
-model_checkpoint_path: "C:/Users/saruman/PycharmProjects/AutoEncoder/TestOutput/model_util_test_BASIC.ckpt"
-all_model_checkpoint_paths: "C:/Users/saruman/PycharmProjects/AutoEncoder/TestOutput/model_util_test_BASIC.ckpt"
+model_checkpoint_path: "C:/Users/saruman/PycharmProjects/Compressive-Autorencoder-for-Image/TestOutput/model_util_test_H_PER.ckpt"
+all_model_checkpoint_paths: "C:/Users/saruman/PycharmProjects/Compressive-Autorencoder-for-Image/TestOutput/model_util_test_H_PER.ckpt"
