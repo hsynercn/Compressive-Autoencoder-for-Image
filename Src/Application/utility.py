@@ -26,11 +26,9 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
     mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
     learning_rate = 0.01
-    num_steps_old = 50000
-    num_steps = 400
+    num_steps = 4
     batch_size = 256
     test_steps = 10 * 4
-    display_step = 1000
 
     input, encoder, decoder = construct_network(autoencoder_architecture)
 
@@ -41,7 +39,7 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
     init = tf.global_variables_initializer()
 
     saver = tf.train.Saver()
-
+    file_object = open(model_file_path + "log", 'w')
     with tf.Session() as sess:
         sess.run(init)
         for i in range(1, num_steps):
@@ -50,7 +48,8 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
                 batch_x, _ = mnist.train.next_batch(batch_size)
                 _, loss_value = sess.run([optimizer, loss], feed_dict={input: batch_x})
                 sample_cnt += batch_size
-            print('Training Sample %i: Minibatch Loss: %f' % (i, loss_value))
+            print('Training Iteration %i: Minibatch Loss: %f' % (i, loss_value))
+            file_object.write('Training Iteration %i: Minibatch Loss: %f\n' % (i, loss_value))
 
         #for i in range(1, num_steps_old + 1):
         #    batch_x, _ = mnist.train.next_batch(batch_size)
@@ -71,9 +70,10 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
         sess.close()
         total_loss_value /= test_steps
         print('Test Loss: %f' % (total_loss_value))
+        file_object.write('Test Loss: %f\n' % (total_loss_value))
+        file_object.close()
 
 def export_compressed_data(image_data, model_path, autoencoder_architecture, out_path):
-
     input, encoder, decoder = construct_network(autoencoder_architecture)
     with tf.Session() as sess:
         saver = tf.train.Saver()
@@ -83,8 +83,6 @@ def export_compressed_data(image_data, model_path, autoencoder_architecture, out
         sess.close()
 
 def import_compressed_data(model_path, autoencoder_architecture,  import_path):
-
-
     input, encoder, decoder = construct_network(autoencoder_architecture)
     with tf.Session() as sess:
         saver = tf.train.Saver()
@@ -97,7 +95,7 @@ def import_compressed_data(model_path, autoencoder_architecture,  import_path):
         return decoded_image_vector
 
 
-
+"""
 
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
@@ -127,6 +125,6 @@ plt.figure(figsize=(1, 1))
 plt.imshow(canvas_recon, origin="upper", cmap="gray")
 plt.show()
 
-
+"""
 
 
