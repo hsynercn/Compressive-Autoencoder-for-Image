@@ -22,11 +22,12 @@ def construct_network(layer_neurons):
 
 
 def train_network_mnist(autoencoder_architecture, model_file_path):
+    tf.reset_default_graph()
     from tensorflow.examples.tutorials.mnist import input_data
     mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
     learning_rate = 0.01
-    num_steps = 4
+    num_steps = 450
     batch_size = 256
     test_steps = 10 * 4
 
@@ -40,6 +41,7 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
 
     saver = tf.train.Saver()
     file_object = open(model_file_path + "log", 'w')
+
     with tf.Session() as sess:
         sess.run(init)
         for i in range(1, num_steps):
@@ -72,9 +74,13 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
         print('Test Loss: %f' % (total_loss_value))
         file_object.write('Test Loss: %f\n' % (total_loss_value))
         file_object.close()
+        sess.close()
 
 def export_compressed_data(image_data, model_path, autoencoder_architecture, out_path):
+    tf.reset_default_graph()
     input, encoder, decoder = construct_network(autoencoder_architecture)
+    init = tf.global_variables_initializer()
+
     with tf.Session() as sess:
         saver = tf.train.Saver()
         saver.restore(sess, model_path)
@@ -83,19 +89,23 @@ def export_compressed_data(image_data, model_path, autoencoder_architecture, out
         sess.close()
 
 def import_compressed_data(model_path, autoencoder_architecture,  import_path):
+    tf.reset_default_graph()
     input, encoder, decoder = construct_network(autoencoder_architecture)
+    init = tf.global_variables_initializer()
+
     with tf.Session() as sess:
         saver = tf.train.Saver()
         saver.restore(sess, model_path)
-
         recover_encoded_image_vector = np.loadtxt(import_path)
         size = recover_encoded_image_vector.size
         recover_encoded_image_vector = recover_encoded_image_vector.reshape(1, size)
         decoded_image_vector = sess.run(decoder, feed_dict={encoder: recover_encoded_image_vector})
+        sess.close()
         return decoded_image_vector
 
 
 """
+Sample code usage
 
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)

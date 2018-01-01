@@ -26,6 +26,9 @@ class MyUserInterface:
         self.notebook.add(self.frame2, text='Compression')
         self.notebook.pack(expand=1, fill="both")
 
+        self.canvas_decomp_out = np.zeros((28, 28))
+        self.canvas_input = np.empty((28, 28))
+
         self.training_label_arc = Label(self.frame1, text="Network Architecture:" + " ".join(str(self.architecture)))
         self.training_label_arc.place(relx=0.02, rely=0.02)
         self.training_entry = Entry(self.frame1, width=10)
@@ -38,9 +41,13 @@ class MyUserInterface:
         self.training_button_clear.place(relx=0.1, rely=0.2)
 
         self.selected_image_number = 0
-        canvas = FigureCanvasTkAgg(self.get_figure(self.selected_image_number), master=self.frame2)
-        self.plot_widget = canvas.get_tk_widget()
-        self.plot_widget.place(relx=0.5, rely=0.5)
+        self.canvas_selector = FigureCanvasTkAgg(self.get_figure(self.selected_image_number), master=self.frame2)
+        self.plot_widget_selector = self.canvas_selector.get_tk_widget()
+        self.plot_widget_selector.place(relx=0.02, rely=0.4)
+
+        self.canvas_ext_res = FigureCanvasTkAgg(self.get_empty_figure(), master=self.frame2)
+        self.plot_widget_ext_res = self.canvas_ext_res.get_tk_widget()
+        self.plot_widget_ext_res.place(relx=0.4, rely=0.4)
 
         self.model_file_label = Label(self.frame2, text="Model File:")
         self.model_file_label.place(relx=0.02, rely=0.02)
@@ -50,12 +57,12 @@ class MyUserInterface:
         self.model_file_entry.place(relx=0.2, rely=0.02)
         self.model_file_compress_button = Button(self.frame2, text="Compress Data", command=self.model_file_compress)
         self.model_file_compress_button.place(relx=0.02, rely=0.15)
-        self.model_file_decompress = Button(self.frame2, text="Decompress Data", command=self.modelfile_select_callback)
+        self.model_file_decompress = Button(self.frame2, text="Decompress Data", command=self.model_file_decompress)
         self.model_file_decompress.place(relx=0.15, rely=0.15)
         self.model_file_select_image_button = Button(self.frame2, text="Select Image", command=self.got_to_image)
-        self.model_file_select_image_button.place(relx=0.35, rely=0.35)
+        self.model_file_select_image_button.place(relx=0.02, rely=0.25)
         self.model_file_image_number = Entry(self.frame2, width=10)
-        self.model_file_image_number.place(relx=0.45, rely=0.45)
+        self.model_file_image_number.place(relx=0.11, rely=0.26)
 
     def modelfile_select_callback(self):
         file_ext = MyUserInterface.Model_file_ext
@@ -91,30 +98,50 @@ class MyUserInterface:
         autoencoder_architecture = [784, 128, 64, 128, 784]
         mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
         image_data = mnist.train.images[self.selected_image_number]
-        save_file = asksaveasfilename()
-        util.export_compressed_data(image_data, self.model_file_entry, autoencoder_architecture, save_file)
+        image_data = image_data.reshape(1, autoencoder_architecture[0])
+        save_file = asksaveasfilename(defaultextension=".test")
+        util.export_compressed_data(image_data, self.model_file_entry.get(), autoencoder_architecture, save_file)
         return
 
     def model_file_decompress(self):
+        autoencoder_architecture = [784, 128, 64, 128, 784]
+        load_compressed_file = askopenfilename(filetypes=[('Compression results', '.test')])
+        load_data = util.import_compressed_data(self.model_file_entry.get(), autoencoder_architecture, load_compressed_file)
+
+        self.canvas_decomp_out = np.zeros((28, 28))
+        self.canvas_decomp_out = load_data.reshape([28, 28])
+        figure = plt.figure(figsize=(2, 2), frameon=False)
+        plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
+        plt.imshow(self.canvas_decomp_out, cmap="gray")
+        self.canvas_ext_res.figure = figure
+        self.canvas_ext_res.show()
+
+        s = np.sum((self.canvas_decomp_out - self.canvas_input) ** 2) / 784
+        print(s)
+
         return
 
     def get_figure(self, selected_image_number):
         mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
         original_image = mnist.train.images[selected_image_number]
-        canvas_orig = np.empty((28, 28))
-        canvas_orig = original_image.reshape([28, 28])
-        figure = plt.figure(figsize=(2, 2))
+        self.canvas_input = np.empty((28, 28))
+        self.canvas_input = original_image.reshape([28, 28])
+        figure = plt.figure(figsize=(2, 2), frameon=False)
         plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
-        manager = plt.get_current_fig_manager()
-        manager.resize(*manager.window.maxsize())
-        plt.imshow(canvas_orig, cmap="gray")
+        plt.imshow(self.canvas_input, cmap="gray")
+        return figure
+
+    def get_empty_figure(self):
+        self.canvas_decomp_out = np.zeros((28, 28))
+        figure = plt.figure(figsize=(2, 2), frameon=False)
+        plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
+        plt.imshow(self.canvas_decomp_out, cmap="gray")
         return figure
 
     def got_to_image(self):
         self.selected_image_number = int(self.model_file_image_number.get())
-        canvas = FigureCanvasTkAgg(self.get_figure(self.selected_image_number), master=self.frame2)
-        self.plot_widget = canvas.get_tk_widget()
-        self.plot_widget.place(relx=0.5, rely=0.5)
+        self.canvas_selector.figure = self.get_figure(self.selected_image_number)
+        self.canvas_selector.show()
         return
 
     def mainloop(self):
