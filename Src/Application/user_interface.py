@@ -16,6 +16,7 @@ class MyUserInterface:
 
     def __init__(self):
         self.master = Tk()
+        self.master.title("Autoencoder Demo")
         self.master.geometry('1000x500')
         self.architecture = [784, 784]
 
@@ -95,7 +96,7 @@ class MyUserInterface:
         return
 
     def model_file_compress(self):
-        autoencoder_architecture = [784, 128, 64, 128, 784]
+        autoencoder_architecture = self.architecture#[784, 128, 64, 128, 784]
         mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
         image_data = mnist.train.images[self.selected_image_number]
         image_data = image_data.reshape(1, autoencoder_architecture[0])
@@ -104,7 +105,7 @@ class MyUserInterface:
         return
 
     def model_file_decompress(self):
-        autoencoder_architecture = [784, 128, 64, 128, 784]
+        autoencoder_architecture = self.architecture
         load_compressed_file = askopenfilename(filetypes=[('Compression results', '.test')])
         load_data = util.import_compressed_data(self.model_file_entry.get(), autoencoder_architecture, load_compressed_file)
 

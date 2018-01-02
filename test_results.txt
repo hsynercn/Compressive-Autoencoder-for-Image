@@ -1,2 +1,0 @@
-model 0: learning rate:: 0.010000 iteration limit: 50000
-[784, 128, 64, 128, 784]

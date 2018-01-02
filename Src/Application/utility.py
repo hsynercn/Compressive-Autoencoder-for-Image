@@ -52,13 +52,6 @@ def train_network_mnist(autoencoder_architecture, model_file_path):
                 sample_cnt += batch_size
             print('Training Iteration %i: Minibatch Loss: %f' % (i, loss_value))
             file_object.write('Training Iteration %i: Minibatch Loss: %f\n' % (i, loss_value))
-
-        #for i in range(1, num_steps_old + 1):
-        #    batch_x, _ = mnist.train.next_batch(batch_size)
-        #    _, l = sess.run([optimizer, loss], feed_dict={input: batch_x})
-        #    if i % display_step == 0 or i == 1:
-        #        print('Step %i: Minibatch Loss: %f' % (i, l))
-
         saver.save(sess, model_file_path)
 
         test_cnt = 0
@@ -105,7 +98,7 @@ def import_compressed_data(model_path, autoencoder_architecture,  import_path):
 
 
 """
-Sample code usage
+Sample code
 
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
@@ -117,9 +110,9 @@ out_path = "C:/Users/saruman/PycharmProjects/Compressive-Autorencoder-for-Image/
 batch_x, _ = mnist.train.next_batch(1)
 
 
-#train_network_mnist(autoencoder_architecture , model_path)
+train_network_mnist(autoencoder_architecture , model_path)
 
-#export_compressed_data( batch_x , model_path, autoencoder_architecture , out_path)
+export_compressed_data( batch_x , model_path, autoencoder_architecture , out_path)
 
 canvas_orig = np.empty((28, 28))
 canvas_orig = batch_x.reshape([28, 28])
