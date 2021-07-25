@@ -1,4 +1,4 @@
-# Compressive Autorencoder for Image
+# Compressive Autoencoder for Image
 
 Autoencoder usage for image compression, dimension reduction of datasets. Tensorflow api implementation for compression.
 
