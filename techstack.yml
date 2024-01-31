@@ -1,0 +1,31 @@
+repo_name: hsynercn/Compressive-Autoencoder-for-Image
+report_id: c8cd1212b5b558797f6c8fb77a92def5
+version: 0.1
+repo_type: Public
+timestamp: '2024-01-31T10:51:09+00:00'
+requested_by: hsynercn
+provider: github
+branch: master
+detected_tools_count: 2
+tools:
+- name: Python
+  description: A clear and powerful object-oriented programming language, comparable
+    to Perl, Ruby, Scheme, or Java.
+  website_url: https://www.python.org
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source_url: https://github.com/hsynercn/Compressive-Autoencoder-for-Image
+  detection_source: Repo Metadata
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/hsynercn/Compressive-Autoencoder-for-Image
+  detection_source: Repo Metadata
